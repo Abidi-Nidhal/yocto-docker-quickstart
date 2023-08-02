@@ -19,11 +19,11 @@ if [ -e "${directory}" ]; then
 fi
 
 # create the directory
-mkdir -p "${directory}/sources" && cd "${directory}"
+mkdir -p "${directory}" && cd "${directory}"
 
 # clone poky and other layers
-git clone -b dunfell git://git.yoctoproject.org/poky.git sources/poky
-git clone -b dunfell https://github.com/agherzan/meta-raspberrypi.git sources/meta-raspberrypi
-git clone -b dunfell https://github.com/openembedded/meta-openembedded.git sources/meta-openembedded
+git clone -b kirkstone git://git.yoctoproject.org/poky.git poky
+git clone -b kirkstone https://github.com/agherzan/meta-raspberrypi.git meta-raspberrypi
+git clone -b kirkstone https://github.com/openembedded/meta-openembedded.git meta-openembedded
 
-echo "Done, type \"cd ${directory} && . ./sources/poky/oe-init-build-env\" to create the build environment"
+echo "Done, type \"cd ${directory} && . ./poky/oe-init-build-env\" to create the build environment"

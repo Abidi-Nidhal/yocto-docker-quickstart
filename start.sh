@@ -14,15 +14,6 @@ usage() {
   exit 0
 }
 
-# rough check to see if we are in correct directory
-dirs_to_check=( "./cache/downloads" "./cache/sstate" "./home" )
-for d in "${dirs_to_check[@]}"; do
-  if [[ ! -d ${d} ]]; then
-    echo "\"${d}\" directory not found"
-    usage
-  fi
-done
-
 arg_privileged=""
 set_arg_privileged() {
   echo "WARNING: Running the container with privileged access"
@@ -78,21 +69,19 @@ empty_password_hash="U6aMy0wojraho"
 if [ "${run_additional_instance}" = true ]; then
     docker container exec \
         -it \
-        --user yocto \
-        -w /opt/yocto/workspace \
+        --user $USER \
         yocto-compile-env \
         /bin/bash
 else
     docker container run \
         -it \
         --rm \
-        -v "${PWD}":/opt/yocto \
         --name yocto-compile-env \
         ${arg_net_forward} \
         ${arg_x11_forward} \
         ${arg_privileged} \
-        --volume "${PWD}/home":/home/yocto \
-        openenv/yocto-compile-env:1.2 \
+        --volume "$HOME":/home/$USER \
+        openenv/yocto-compile-env:1.3 \
         sudo bash -c "groupadd -g 7777 yocto && useradd --password ${empty_password_hash} --shell /bin/bash -u ${UID} -g 7777 \
-        yocto && usermod -aG sudo yocto && usermod -aG users yocto && cd /opt/yocto && su yocto"
+        $USER && usermod -aG sudo $USER && usermod -aG users $USER && cd /home/$USER && su $USER"
 fi
